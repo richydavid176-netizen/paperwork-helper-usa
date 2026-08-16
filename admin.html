@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Paperwork Helper USA — Private Dashboard</title>
+<style>
+body{margin:0;font-family:Arial,sans-serif;background:#f5f7fb;color:#172033}
+header{background:#123b6d;color:#fff;padding:18px 6%;display:flex;justify-content:space-between;align-items:center}
+main{max-width:1050px;margin:auto;padding:30px 6%}.card{background:#fff;border-radius:12px;padding:22px;margin-bottom:20px;box-shadow:0 3px 15px #0001}
+input,button{font:inherit;padding:12px;border-radius:8px}input{width:100%;box-sizing:border-box;border:1px solid #ccd3df;margin:7px 0 14px}
+button{border:0;background:#123b6d;color:#fff;font-weight:bold;cursor:pointer}.secondary{background:#536174}.hidden{display:none}
+.status{padding:12px;border-radius:8px;background:#eef3f9;margin:12px 0}.request{border:1px solid #dce2ea;border-radius:10px;padding:16px;margin:12px 0}
+.badge{display:inline-block;padding:5px 9px;border-radius:20px;background:#eef3f9;font-size:13px}.small{font-size:13px;color:#667085}
+pre{white-space:pre-wrap;background:#f5f7fb;padding:14px;border-radius:8px}
+</style></head>
+<body>
+<header><strong>Paperwork Helper USA — Private Dashboard</strong><button id="logout" class="secondary hidden">Sign out</button></header>
+<main>
+<section id="loginCard" class="card"><h2>Owner login</h2><p class="small">This page is for the business owner only.</p>
+<label>Email</label><input id="email" type="email" autocomplete="username">
+<label>Password</label><input id="password" type="password" autocomplete="current-password">
+<button id="login">Sign in</button><div id="loginMsg" class="status hidden"></div></section>
+<section id="dashboard" class="hidden"><div class="card"><h2>Requests</h2><p id="who" class="small"></p>
+<button id="refresh">Refresh requests</button><div id="requests"></div></div></section>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL="https://vhssqznbusdkkjdokbd.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY="PASTE_YOUR_SUPABASE_PUBLISHABLE_KEY_HERE";
+const client=supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,{auth:{persistSession:true,autoRefreshToken:true}});
+const $=id=>document.getElementById(id);
+function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));}
+function msg(t,e=false){$("loginMsg").textContent=t;$("loginMsg").classList.remove("hidden");$("loginMsg").style.background=e?"#ffe9e9":"#eef3f9";}
+async function loadRequests(){
+ const {data:{user}}=await client.auth.getUser(); if(!user)return;
+ $("who").textContent="Signed in as "+(user.email||"owner"); $("requests").innerHTML="<p>Loading…</p>";
+ const {data,error}=await client.from("request").select("id,created_at,customer_name,customer_email,service,language,status,document_path,ai_draft,final_explanation").order("created_at",{ascending:false});
+ if(error){$("requests").innerHTML="<div class='status'>Could not load requests: "+esc(error.message)+"</div>";return;}
+ if(!data?.length){$("requests").innerHTML="<div class='status'>No requests yet.</div>";return;}
+ $("requests").innerHTML=data.map(r=>`<article class="request"><h3>${esc(r.customer_name||"Customer")}</h3><span class="badge">${esc(r.status||"New")}</span>
+ <p><strong>Service:</strong> ${esc(r.service||"—")}</p><p><strong>Email:</strong> ${esc(r.customer_email||"—")}</p>
+ <p><strong>Language:</strong> ${esc(r.language||"—")}</p><p><strong>Submitted:</strong> ${esc(r.created_at?new Date(r.created_at).toLocaleString():"—")}</p>
+ <p><strong>Document reference:</strong> ${esc(r.document_path||"Not uploaded")}</p>
+ ${r.ai_draft?`<h4>AI draft</h4><pre>${esc(r.ai_draft)}</pre>`:""}${r.final_explanation?`<h4>Your final explanation</h4><pre>${esc(r.final_explanation)}</pre>`:""}</article>`).join("");
+}
+$("login").onclick=async()=>{const email=$("email").value.trim(),password=$("password").value;if(!email||!password){msg("Enter your email and password.",true);return;}msg("Signing in…");const {error}=await client.auth.signInWithPassword({email,password});if(error){msg(error.message,true);return;}$("loginCard").classList.add("hidden");$("dashboard").classList.remove("hidden");$("logout").classList.remove("hidden");await loadRequests();};
+$("logout").onclick=async()=>{await client.auth.signOut();location.reload();};
+$("refresh").onclick=loadRequests;
+client.auth.onAuthStateChange(async(_event,session)=>{if(session){$("loginCard").classList.add("hidden");$("dashboard").classList.remove("hidden");$("logout").classList.remove("hidden");await loadRequests();}});
+</script></body></html>
