@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Paperwork Helper USA</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;color:#172033;background:#f7f9fc;line-height:1.6}
+header{background:#123b6d;color:#fff;padding:18px 7%;display:flex;justify-content:space-between;align-items:center}
+.logo{font-size:22px;font-weight:700}nav a{color:#fff;text-decoration:none;margin-left:20px}
+.hero{padding:80px 7%;background:#fff;text-align:center}.hero h1{font-size:clamp(36px,6vw,60px);margin:0 auto 18px;max-width:850px}
+.hero p{max-width:680px;margin:0 auto 28px;font-size:19px;color:#536174}
+.button{display:inline-block;background:#123b6d;color:#fff;padding:14px 24px;border-radius:8px;text-decoration:none;font-weight:700;border:0;cursor:pointer}
+section{padding:60px 7%;max-width:1150px;margin:auto}h2{text-align:center;font-size:34px;margin-bottom:35px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}.card{background:#fff;padding:28px;border-radius:14px;box-shadow:0 5px 20px #00000012}
+.card h3{margin-top:0}.price{font-size:34px;font-weight:800;color:#123b6d}.small{color:#68758a;font-size:14px}
+.upload{background:#eaf1fa;border:2px dashed #123b6d;padding:40px;border-radius:14px;text-align:center}
+form{max-width:650px;margin:auto}input,select{width:100%;padding:13px;margin:8px 0 16px;border:1px solid #ccd5e2;border-radius:7px;background:#fff}
+.notice{background:#fff7df;border-left:5px solid #d49a00;padding:18px;border-radius:5px}
+footer{background:#172033;color:#fff;padding:35px 7%;text-align:center}
+@media(max-width:750px){.grid{grid-template-columns:1fr}nav{display:none}}
+</style>
+</head>
+<body>
+<header><div class="logo">Paperwork Helper USA</div><nav><a href="#how">How It Works</a><a href="#pricing">Pricing</a><a href="#upload">Upload</a></nav></header>
+<main>
+<section class="hero"><h1>Confused by a U.S. document?</h1><p>We help explain confusing documents in simpler language and identify important instructions and dates.</p><a class="button" href="#upload">Get Started</a></section>
+<section id="how"><h2>How It Works</h2><div class="grid">
+<div class="card"><h3>1. Upload</h3><p>Send a photo or PDF of the document you want explained.</p></div>
+<div class="card"><h3>2. We Review</h3><p>We identify important information, instructions and dates.</p></div>
+<div class="card"><h3>3. Get an Explanation</h3><p>Receive a clear explanation in your selected language.</p></div>
+</div></section>
+<section id="pricing"><h2>Pricing</h2><div class="grid">
+<div class="card"><h3>First Document</h3><div class="price">$50</div><p>Explanation of your first document.</p><a class="button" href="#upload">Choose</a></div>
+<div class="card"><h3>Another Document</h3><div class="price">$75</div><p>Explanation of another document.</p><a class="button" href="#upload">Choose</a></div>
+<div class="card"><h3>Membership</h3><div class="price">$100<span class="small">/month</span></div><p>Ongoing document-explanation service.</p><a class="button" href="#upload">Choose</a></div>
+</div></section>
+<section id="upload"><h2>Send Your Document</h2><div class="upload"><form id="documentForm">
+<label><strong>Your name</strong></label><input name="name" required>
+<label><strong>Email</strong></label><input type="email" name="email" required>
+<label><strong>Preferred language</strong></label><select name="language"><option>English</option><option>Spanish</option><option>Arabic</option><option>Hindi</option><option>Urdu</option><option>Chinese</option><option>Portuguese</option><option>French</option></select>
+<label><strong>Choose a service</strong></label><select name="service"><option>$50 — First document</option><option>$75 — Another document</option><option>$100/month — Ongoing membership</option></select>
+<label><strong>Document</strong></label><input type="file" accept=".pdf,.jpg,.jpeg,.png" required>
+<p class="small">Prototype only: this form does not securely transmit or store uploaded documents yet. Do not upload passwords, payment-card numbers, or unnecessary sensitive information.</p>
+<button class="button" type="submit">Submit Request</button>
+</form><p id="message"></p></div></section>
+<section><div class="notice"><strong>Important:</strong> Paperwork Helper USA is a document-explanation service. It does not provide legal advice, immigration representation, medical advice, or financial advice. For professional advice, consult an appropriately qualified professional.</div></section>
+</main>
+<footer><p><strong>Paperwork Helper USA</strong></p><p>Making confusing U.S. paperwork easier to understand.</p><p class="small">Prototype — secure payments and document storage are not connected yet.</p></footer>
+<script>
+document.getElementById("documentForm").addEventListener("submit",function(e){e.preventDefault();document.getElementById("message").textContent="Thank you. This prototype still needs secure document submission and payment connected."});
+</script>
+</body>
+</html>
