@@ -24,4 +24,48 @@ async function startCustomerSession() {
 }
 
 startCustomerSession();
+</script><h3>Document upload test</h3>
+
+<input type="file" id="documentFile">
+<button type="button" onclick="testDocumentUpload()">Upload test document</button>
+
+<p id="uploadStatus"></p>
+
+<script>
+async function testDocumentUpload() {
+  const fileInput = document.getElementById("documentFile");
+  const status = document.getElementById("uploadStatus");
+
+  if (!fileInput.files.length) {
+    status.textContent = "Please choose a file first.";
+    return;
+  }
+
+  status.textContent = "Uploading...";
+
+  const { data: sessionData, error: sessionError } =
+    await supabaseClient.auth.getSession();
+
+  if (sessionError || !sessionData.session) {
+    status.textContent = "Customer session is not ready.";
+    return;
+  }
+
+  const user = sessionData.session.user;
+  const file = fileInput.files[0];
+
+  const filePath = user.id + "/" + file.name;
+
+  const { error } = await supabaseClient.storage
+    .from("documents")
+    .upload(filePath, file);
+
+  if (error) {
+    console.error(error);
+    status.textContent = "Upload failed: " + error.message;
+    return;
+  }
+
+  status.textContent = "Upload successful!";
+}
 </script></body></html>
