@@ -72,8 +72,8 @@ const { error: requestError } = await supabaseClient
     owner_id: user.id,
     document_path: filePath,
     created_at: new Date().toISOString()
-  });
-
+  }); 
+  
 if (requestError) {
   console.error(requestError);
   status.textContent = "File uploaded, but request was not created: " + requestError.message;
