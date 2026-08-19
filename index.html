@@ -54,7 +54,7 @@ async function testDocumentUpload() {
   const user = sessionData.session.user;
   const file = fileInput.files[0];
 
-  const filePath = user.id + "/" + file.name;
+  const filePath = user.id + "/" + Date.now() + "_" + file.name;
 
   const { error } = await supabaseClient.storage
     .from("documents")
