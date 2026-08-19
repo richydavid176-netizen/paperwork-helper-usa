@@ -34,7 +34,7 @@ function msg(t,e=false){$("loginMsg").textContent=t;$("loginMsg").classList.remo
 async function loadRequests(){
  const {data:{user}}=await client.auth.getUser(); if(!user)return;
  $("who").textContent="Signed in as "+(user.email||"owner"); $("requests").innerHTML="<p>Loading…</p>";
- const {data,error}=await client.from("request").select(created_at,customer_name,customer_email,service,language,status,document_path,ai_draft,final_explanation").order("created_at",{ascending:false});
+ const {data,error}=await client.from("request").select("created_at,customer_name,customer_email,service,language,status,document_path,ai_draft,final_explanation").order("created_at",{ascending:false});
  if(error){$("requests").innerHTML="<div class='status'>Could not load requests: "+esc(error.message)+"</div>";return;}
  if(!data?.length){$("requests").innerHTML="<div class='status'>No requests yet.</div>";return;}
  $("requests").innerHTML=data.map(r=>`<article class="request"><h3>${esc(r.customer_name||"Customer")}</h3><span class="badge">${esc(r.status||"New")}</span>
