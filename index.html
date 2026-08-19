@@ -70,7 +70,8 @@ const { error: requestError } = await supabaseClient
   .from("request")
   .insert({
     owner_id: user.id,
-    document_path: filePath
+    document_path: filePath,
+    created_at: new Date().toISOString()
   });
 
 if (requestError) {
