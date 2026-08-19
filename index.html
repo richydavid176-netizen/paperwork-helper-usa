@@ -66,6 +66,19 @@ async function testDocumentUpload() {
     return;
   }
 
+const { error: requestError } = await supabaseClient
+  .from("request")
+  .insert({
+    owner_id: user.id,
+    document_path: filePath
+  });
+
+if (requestError) {
+  console.error(requestError);
+  status.textContent = "File uploaded, but request was not created: " + requestError.message;
+  return;
+}
+
   status.textContent = "Upload successful!";
 }
 </script></body></html>
